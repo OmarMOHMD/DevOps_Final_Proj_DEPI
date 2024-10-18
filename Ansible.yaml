@@ -1,0 +1,59 @@
+---
+- name: Setup Jenkins on EC2
+  hosts: jenkins
+  become: yes
+  vars:
+    jenkins_home: /var/lib/jenkins
+    jenkins_user: jenkins
+    jenkins_group: jenkins
+    jenkins_url: http://pkg.jenkins.io/debian-stable/jenkins.io.key
+    jenkins_repo: deb http://pkg.jenkins.io/debian-stable binary/
+  tasks:
+    - name: Update apt repository and install dependencies
+      apt:
+        update_cache: yes
+        name: 
+          - openjdk-11-jdk
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+        state: present
+
+    - name: Add Jenkins repository key
+      apt_key:
+        url: "{{ jenkins_url }}"
+        state: present
+
+    - name: Add Jenkins repository
+      apt_repository:
+        repo: "{{ jenkins_repo }}"
+        state: present
+
+    - name: Install Jenkins
+      apt:
+        name: jenkins
+        state: present
+
+    - name: Start and enable Jenkins service
+      systemd:
+        name: jenkins
+        state: started
+        enabled: yes
+
+    - name: Ensure Jenkins is running Docker-in-Docker (DinD)
+      command: docker run --name jenkins-dind --privileged -d docker:dind
+      args:
+        creates: /var/run/docker.sock
+
+    - name: Add Jenkins user to Docker group
+      user:
+        name: "{{ jenkins_user }}"
+        groups: docker
+        append: yes
+
+    - name: Restart Jenkins to apply changes
+      systemd:
+        name: jenkins
+        state: restarted
