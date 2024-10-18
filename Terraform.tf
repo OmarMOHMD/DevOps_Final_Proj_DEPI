@@ -47,3 +47,17 @@ resource "aws_security_group" "jenkins_sg" {
         cidr_blocks = ["0.0.0.0/0"]
     }
 }
+
+resource "aws_eip" "jenkins_eip" {
+    instance = aws_instance.jenkins.id
+}
+
+resource "aws_eip_association" "jenkins_eip_assoc" {
+    instance_id   = aws_instance.jenkins.id
+    allocation_id = aws_eip.jenkins_eip.id
+}
+
+output "jenkins_public_ip" {
+    value = aws_eip.jenkins_eip.public_ip
+    description = "The public IP address of the Jenkins server"
+}

@@ -43,7 +43,7 @@
         enabled: yes
 
     - name: Ensure Jenkins is running Docker-in-Docker (DinD)
-      command: docker run --name jenkins-dind --privileged -d docker:dind
+      command: docker run --name lastcont --privileged -d docker:dind
       args:
         creates: /var/run/docker.sock
 
