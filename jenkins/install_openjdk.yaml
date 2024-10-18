@@ -1,0 +1,10 @@
+---
+- name: Install OpenJDK on Ubuntu using apt
+  hosts: all
+  become: yes  # Ensures the commands run with sudo privileges
+  tasks:
+    - name: Install OpenJDK 11
+      apt:
+        name: openjdk-11-jre-headless
+        state: present
+        update_cache: yes

@@ -1,0 +1,17 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+      - name: Update apt repo and cache on all Debian/Ubuntu boxes
+        apt: update_cache=yes cache_valid_time=3600
+      - name: ensure jenkins apt repo key in installed
+        shell: |
+          sudo apt update
+          sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+          echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+          sudo apt update
+          sudo apt install jenkins
+      - name: ensure jenkins installed
+        apt: name=jenkins update_cache=yes
+      - name: ensure jenkins running
+        service: name=jenkins state=started

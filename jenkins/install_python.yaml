@@ -1,0 +1,13 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+      - name: Update local systems repository
+        apt: update_cache=yes
+      - name: Install Software Properties Common
+        apt: name=software-properties-common
+      - name: Add apt repository for deadsnakes
+        apt_repository: repo=ppa:deadsnakes/ppa update_cache=yes
+        # state=present makes it so ansible makes the package available and installed
+      - name: Install Python
+        apt: name=python3.9 state=present
