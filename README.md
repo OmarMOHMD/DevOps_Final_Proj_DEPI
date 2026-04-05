@@ -44,9 +44,3 @@ Kubernetes is used for scalable deployments. The pipeline will deploy the Docker
 1. **Build Docker Image**: Jenkins will take the code (including `index.html`) and Dockerize it.
 2. **Push to DockerHub**: The Docker image will be pushed to DockerHub, making it accessible for deployment.
 3. **Deploy to EKS**: Jenkins will use `kubectl` commands or Kubernetes deployment manifests to deploy the app into the EKS cluster (different namespaces for Dev and Prod environments).
-
-Let me know if you need more details on any part of this!
-
-![alt text](image.png)
-
-![alt text](image-1.png)
